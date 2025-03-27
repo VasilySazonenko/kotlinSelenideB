@@ -4,7 +4,7 @@ import com.codeborne.selenide.Condition
 import com.codeborne.selenide.Selenide.`$`
 
 class ShippingMethodPage {
-    val pageShippingMethod = `$`("section#checkout-delivery-step")
+    val pageShippingMethod = `$`("section#checkout-delivery-step div.content")
     private val btnContinue = pageShippingMethod.`$`("button[name=confirmDeliveryOption]")
 
     fun performShippingMethodContinue(): PaymentMethodPage {

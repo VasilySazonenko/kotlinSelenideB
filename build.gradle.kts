@@ -23,6 +23,7 @@ dependencies {
 
     // Selenide WebDriver Manager (Optional but recommended for automatic WebDriver management)
     implementation("io.github.bonigarcia:webdrivermanager:6.0.0")
+    testImplementation(kotlin("test"))
 }
 
 tasks.test {

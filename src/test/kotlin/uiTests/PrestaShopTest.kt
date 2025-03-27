@@ -1,8 +1,7 @@
 package uiTests
 
 import io.github.bonigarcia.wdm.WebDriverManager
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -36,6 +35,15 @@ class PrestaShopTest {  // Inherit utils.BaseTest
         val email = "silasveta@dozor.com"
         val password = "N0DarkPowerOnMe@"
         val birthDate = "05/05/2001"
+
+        val alias = "Geser"
+        val company = "Nochnoy Dozor"
+        val mainAddress = "Rozovaya street 1/2"
+        val additionalAddress = "Zelenaya Street 2/3"
+        val city = "Zelenaya Street 2/3"
+        val postcode = "10581"
+        val phone = "2896488633"
+        val country = "France"
 
         val headerPage = BaseTest
             .navigateToHomePage()
@@ -98,27 +106,45 @@ class PrestaShopTest {  // Inherit utils.BaseTest
             .addItemsToCart()
             .navigateToCart()
 
+        val totalProductsPrice = shoppingCartPage.getTotalPrice()
+
         assertEquals(
-            shoppingCartPage.getTotalPrice(),
+            totalProductsPrice,
             shoppingCartPage.getAllCartProductsPrice().sum(),
             "Total price sum of all items in the cart is not correct"
         )
 
-        shoppingCartPage
+        val paymentMethodPage = shoppingCartPage
             .performCheckout()
-            .fillPersonalInfoInput(PersonalInfo.ALIAS, "Geser")
-            .fillPersonalInfoInput(PersonalInfo.COMPANY, "Nochnoy Dozor")
-            .fillPersonalInfoInput(PersonalInfo.MAIN_ADDRESS, "Rozovaya street 1/2")
-            .fillPersonalInfoInput(PersonalInfo.ADDITIONAL_ADDRESS, "Zelenaya Street 2/3")
-            .fillPersonalInfoInput(PersonalInfo.CITY, "Zelenaya Street 2/3")
-            .fillPersonalInfoInput(PersonalInfo.POSTCODE, "10581")
-            .fillPersonalInfoInput(PersonalInfo.PHONE, "2896488633")
-            .selectState("Arkansas")
-            .selectCountry("United States")
+            .selectCountry(country)
+            .fillPersonalInfoInput(PersonalInfo.ALIAS, alias)
+            .fillPersonalInfoInput(PersonalInfo.COMPANY, company)
+            .fillPersonalInfoInput(PersonalInfo.MAIN_ADDRESS, mainAddress)
+            .fillPersonalInfoInput(PersonalInfo.ADDITIONAL_ADDRESS, additionalAddress)
+            .fillPersonalInfoInput(PersonalInfo.CITY, city)
+            .fillPersonalInfoInput(PersonalInfo.POSTCODE, postcode)
+            .fillPersonalInfoInput(PersonalInfo.PHONE, phone)
             .performAddressContinue()
             .performShippingMethodContinue()
             .approveTermsOfService()
+            .choosePayByCheck()
+
+        assertTrue(
+            paymentMethodPage.getCheckTotalPrice().contains(totalProductsPrice.toString()),
+            "Price in the check is not equal to total product price"
+        )
+
+        val orderConfirmationPage = paymentMethodPage
             .submitOrder()
-//TODO finish test with checking order details and verified logout
+
+        // it's not clear which orders details to assert from testcase, ping me if more asserts are needed
+        assertTrue(
+            orderConfirmationPage.getOrderDetailsPaymentMethod().contains("Payments by check"),
+            "Payment method on order confirmation page is not correct"
+        )
+        headerPage.signOutUser()
+
+        assertFalse(headerPage.getUserAccount().isDisplayed, "User banner is displayed")
+        assertTrue(headerPage.getBtnSignIn().isDisplayed, "User sign in button is not displayed")
     }
 }
