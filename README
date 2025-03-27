@@ -1,0 +1,8 @@
+To execute test from local machine using IDE you need to:
+1. Open PrestaShopTest.kt and execute test by pressing green arrow nearby @Tag
+or
+2. using integrated terminal you can execute sequentially and it will execute task and open report in the browser window:
+`./gradlew test`
+`start build/reports/tests/test/index.html`
+
+To execute test from

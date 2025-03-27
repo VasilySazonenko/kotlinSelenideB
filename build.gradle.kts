@@ -27,6 +27,7 @@ dependencies {
 }
 
 tasks.test {
-    useJUnitPlatform()
-
+    useJUnitPlatform(){
+    includeTags("shop") // You can specify the tag to include
+    }
 }
