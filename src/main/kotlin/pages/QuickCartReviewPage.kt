@@ -12,7 +12,7 @@ class QuickCartReviewPage {
     private val btnProceedToCheckout = frmActionButtons.`$`("a.btn")
 
     fun getProductTotalPrice(): Double {
-       return frmProductPrice.text().replace("€", "").trim().toDouble()
+        return frmProductPrice.text().replace("€", "").trim().toDouble()
     }
 
     fun closeQuickCartReview(): SelectedProductPage {

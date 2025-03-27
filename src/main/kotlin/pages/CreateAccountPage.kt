@@ -4,7 +4,7 @@ import com.codeborne.selenide.Selenide.`$`
 import com.codeborne.selenide.SelenideElement
 
 
-public class CreateAccountPage {
+class CreateAccountPage {
 
     enum class CreateAccInputs(val label: String) {
         FIRSTNAME("firstname"),
@@ -21,12 +21,14 @@ public class CreateAccountPage {
         PRIVACY("customer_privacy")
     }
 
-    private val pageCreateAccount = `$`("#registration");
+    private val pageCreateAccount = `$`("#registration")
+
     // social title row
     private val frmSocialTitle = pageCreateAccount.`$`("div.form-group:has(label[for=field-id_gender])")
     private val radioMr = frmSocialTitle.`$`("input#field-id_gender-1")
     private val radioMrs = frmSocialTitle.`$`("input#field-id_gender-2")
     private val btnSave = pageCreateAccount.`$`("button[type=submit]")
+
     // generic getter for several input fields
     data class FormField(val formGroup: SelenideElement, val input: SelenideElement)
 
@@ -44,7 +46,7 @@ public class CreateAccountPage {
 
     fun fillNewAccountField(formName: CreateAccInputs, value: String): CreateAccountPage {
         getFormField(formName).input.setValue(value)
-        return CreateAccountPage();
+        return CreateAccountPage()
     }
 
     /** True for Male, false for Female */

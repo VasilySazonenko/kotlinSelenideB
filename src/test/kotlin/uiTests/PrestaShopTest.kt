@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import pages.CreateAccountPage.CheckBoxType
 import pages.CreateAccountPage.CreateAccInputs
+import pages.checkOutPages.AddressesPage.PersonalInfo
 import utils.BaseTest
 import kotlin.random.Random
-import pages.checkOutPages.AddressesPage.PersonalInfo
 
 class PrestaShopTest {  // Inherit utils.BaseTest
 
@@ -33,6 +33,9 @@ class PrestaShopTest {  // Inherit utils.BaseTest
         val filtersCount = 1
         val firstName = "Anton"
         val lastName = "Gorodecky"
+        val email = "silasveta@dozor.com"
+        val password = "N0DarkPowerOnMe@"
+        val birthDate = "05/05/2001"
 
         val headerPage = BaseTest
             .navigateToHomePage()
@@ -42,17 +45,17 @@ class PrestaShopTest {  // Inherit utils.BaseTest
             .pickGenderRadio(true)
             .fillNewAccountField(CreateAccInputs.FIRSTNAME, firstName)
             .fillNewAccountField(CreateAccInputs.LASTNAME, lastName)
-            .fillNewAccountField(CreateAccInputs.EMAIL, "silasveta@dozor.com")
-            .fillNewAccountField(CreateAccInputs.PASSWORD, "N0DarkPowerOnMe@")
-            .fillNewAccountField(CreateAccInputs.BIRTHDATE, "05/05/2001")
+            .fillNewAccountField(CreateAccInputs.EMAIL, email)
+            .fillNewAccountField(CreateAccInputs.PASSWORD, password)
+            .fillNewAccountField(CreateAccInputs.BIRTHDATE, birthDate)
             .pickCheckBox(CheckBoxType.POLICY)
             .pickCheckBox(CheckBoxType.PRIVACY)
             .saveNewUSerCreation()
             .getHeaderPage()
 
-assertTrue(headerPage.getUserAccountText().contains("$firstName $lastName"))
+        assertTrue(headerPage.getUserAccountText().contains("$firstName $lastName"))
 
-           val filteredProductsPage = headerPage
+        val filteredProductsPage = headerPage
             .openAccessoriesPage()
             .getFilterPage()
             .setPriceFilterTo(true, lowestPriceFilter)
@@ -62,8 +65,8 @@ assertTrue(headerPage.getUserAccountText().contains("$firstName $lastName"))
         val allFilteredProductPrices = filteredProductsPage
             .getAllProductPrices()
         assertTrue(
-            allFilteredProductPrices.all { it in 18.00..23.00 },
-            "Not all prices are between 18 and 23"
+            allFilteredProductPrices.all { it in lowestPriceFilter.toDouble()..highestPriceFilter.toDouble() },
+            "Not all prices are between $lowestPriceFilter and $highestPriceFilter"
         )
         val selectedProductPage = filteredProductsPage
             .pickProductByIndex(firstRandomInt)
@@ -79,10 +82,15 @@ assertTrue(headerPage.getUserAccountText().contains("$firstName $lastName"))
             .closeQuickCartReview()
             .navigateBackToFilteredProductPage()
 
-        assertTrue(filteredProductsPage.getAllFilterItemsTexts().size == filtersCount)
+        assertTrue(
+            filteredProductsPage.getAllFilterItemsTexts().size == filtersCount,
+            "Filters count is incorrect after navigating back"
+        )
         assertTrue(
             filteredProductsPage.getAllFilterItemsTexts()
-                .any { it.contains("€$lowestPriceFilter.00 - €$highestPriceFilter.00") })
+                .any { it.contains("€$lowestPriceFilter.00 - €$highestPriceFilter.00") },
+            "Filters value is not correct after navigating back"
+        )
 
 
         val shoppingCartPage = filteredProductsPage
@@ -90,7 +98,11 @@ assertTrue(headerPage.getUserAccountText().contains("$firstName $lastName"))
             .addItemsToCart()
             .navigateToCart()
 
-        assertEquals(shoppingCartPage.getTotalPrice(), shoppingCartPage.getAllCartProductsPrice().sum())
+        assertEquals(
+            shoppingCartPage.getTotalPrice(),
+            shoppingCartPage.getAllCartProductsPrice().sum(),
+            "Total price sum of all items in the cart is not correct"
+        )
 
         shoppingCartPage
             .performCheckout()

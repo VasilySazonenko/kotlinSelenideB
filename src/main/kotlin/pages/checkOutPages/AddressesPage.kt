@@ -6,8 +6,10 @@ import pages.CreateAccountPage.FormField
 
 class AddressesPage {
     val pageAddressesPage = `$`("section#content:has(section#checkout-personal-information-step)")
-    private val drdState = pageAddressesPage.`$`("div.form-group select#field-id_state") //drd throws nullpointer if i make "div.form-group" as separate parent element for select
-    private val drdCountry = pageAddressesPage.`$`("div.form-group select#field-id_country") //drd throws nullpointer if i make "div.form-group" as separate parent element for select
+    private val drdState =
+        pageAddressesPage.`$`("div.form-group select#field-id_state") //drd throws nullpointer if i make "div.form-group" as separate parent element for select
+    private val drdCountry =
+        pageAddressesPage.`$`("div.form-group select#field-id_country") //drd throws nullpointer if i make "div.form-group" as separate parent element for select
     private val btnContinue = pageAddressesPage.`$`("button[name=confirm-addresses]")
 
     enum class PersonalInfo(val input: String) {
@@ -28,7 +30,7 @@ class AddressesPage {
 
     fun fillPersonalInfoInput(formName: PersonalInfo, value: String): AddressesPage {
         getFormField(formName).input.setValue(value)
-        return AddressesPage();
+        return AddressesPage()
     }
 
     fun selectState(stateName: String): AddressesPage {

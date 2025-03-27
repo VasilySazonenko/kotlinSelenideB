@@ -3,7 +3,6 @@ package utils
 import com.codeborne.selenide.Condition
 import com.codeborne.selenide.Selenide.*
 import pages.AccessoriesFilteringPage
-import pages.HeaderPage
 import pages.HomePage
 import java.time.Duration
 
@@ -15,7 +14,7 @@ object BaseTest {
 
     fun navigateToHomePage(): HomePage {
         open("https://demo.prestashop.com/")  // Open the URL
-        waitForLoadingMsgDisappear();
+        waitForLoadingMsgDisappear()
         switchToIframe()
         return HomePage()  // Return the HomePage object
     }
@@ -28,7 +27,7 @@ object BaseTest {
         return AccessoriesFilteringPage()
     }
 
-    fun switchToIframe(){
+    fun switchToIframe() {
         switchTo().frame(iframe)
     }
 }
